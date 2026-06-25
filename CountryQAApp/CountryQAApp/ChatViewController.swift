@@ -16,6 +16,7 @@ public final class ChatViewController: UIViewController, CountryAnswerView {
     }
     
     public var onAsk: ((String) -> Void)?
+    public var imageLoader: ((URL) async -> Data?)?
     
     private enum Bubble {
         case user(text: String)
@@ -143,6 +144,15 @@ extension ChatViewController: UITableViewDataSource {
                 showsRetry: viewModel.showsRetry,
                 onRetry: { [weak self] in self?.retry() }
             )
+            if let url = viewModel.flagImageURL {
+                cell.flagImageURL = url
+                Task { [weak self, weak cell] in
+                    let data = await self?.imageLoader?(url)
+                    guard let cell, cell.flagImageURL == url,
+                          let data, let image = UIImage(data: data) else { return }
+                    cell.setFlagImage(image)
+                }
+            }
         }
         return cell
     }

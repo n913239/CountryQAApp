@@ -13,16 +13,27 @@ final class ChatMessageCell: UITableViewCell {
     enum AccessibilityIdentifier {
         static let bubbleLabel = "chat-bubble-label"
         static let retryButton = "chat-retry-button"
+        static let flagImage = "chat-flag-image"
     }
+    
+    var flagImageURL: URL?
     
     private let bubbleLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.accessibilityIdentifier = AccessibilityIdentifier.bubbleLabel
         return label
+    }()
+    
+    private let flagImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.isHidden = true
+        imageView.accessibilityIdentifier = AccessibilityIdentifier.flagImage
+        return imageView
     }()
     
     private let retryButton: UIButton = {
@@ -31,9 +42,16 @@ final class ChatMessageCell: UITableViewCell {
         button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
         button.titleLabel?.adjustsFontForContentSizeCategory = true
         button.isHidden = true
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.accessibilityIdentifier = AccessibilityIdentifier.retryButton
         return button
+    }()
+    
+    private lazy var stack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [bubbleLabel, flagImageView, retryButton])
+        stack.axis = .vertical
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
     private var onRetry: (() -> Void)?
@@ -49,9 +67,18 @@ final class ChatMessageCell: UITableViewCell {
         bubbleLabel.text = text
         bubbleLabel.textColor = isUser ? .label : .secondaryLabel
         bubbleLabel.textAlignment = isUser ? .right : .left
+        stack.alignment = isUser ? .trailing : .leading
         retryButton.isHidden = !showsRetry
+        flagImageView.isHidden = true
+        flagImageView.image = nil
+        flagImageURL = nil
         self.onRetry = onRetry
         selectionStyle = .none
+    }
+    
+    func setFlagImage(_ image: UIImage?) {
+        flagImageView.image = image
+        flagImageView.isHidden = image == nil
     }
     
     // MARK: - Actions
@@ -64,17 +91,15 @@ final class ChatMessageCell: UITableViewCell {
     
     private func setupUI() {
         retryButton.addTarget(self, action: #selector(retryTapped), for: .touchUpInside)
-        contentView.addSubview(bubbleLabel)
-        contentView.addSubview(retryButton)
+        contentView.addSubview(stack)
         
         NSLayoutConstraint.activate([
-            bubbleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            bubbleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            bubbleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            retryButton.topAnchor.constraint(equalTo: bubbleLabel.bottomAnchor, constant: 4),
-            retryButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            retryButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            flagImageView.widthAnchor.constraint(equalToConstant: 140),
+            flagImageView.heightAnchor.constraint(equalToConstant: 90)
         ])
     }
 }
