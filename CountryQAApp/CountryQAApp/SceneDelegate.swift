@@ -6,20 +6,20 @@
 //
 
 import UIKit
+import CountryQA
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
+    private lazy var httpClient: HTTPClient = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        let chat = ChatViewController()
-        chat.imageLoader = { url in
-            try? await URLSession(configuration: .ephemeral).data(from: url).0
-        }
-        window.rootViewController = UINavigationController(rootViewController: chat)
+        window.rootViewController = UINavigationController(
+            rootViewController: CountryQAUIComposer.compose(httpClient: httpClient)
+        )
         self.window = window
         window.makeKeyAndVisible()
     }
