@@ -20,9 +20,9 @@ final class LevenshteinDistanceTests: XCTestCase {
     }
     
     func test_distance_countsSingleEdits() {
-        XCTAssertEqual(levenshteinDistance("capitol", "capital"), 1) // 改 1 字
-        XCTAssertEqual(levenshteinDistance("flg", "flag"), 1)        // 插 1 字
-        XCTAssertEqual(levenshteinDistance("codee", "code"), 1)      // 刪 1 字
+        XCTAssertEqual(levenshteinDistance("capitol", "capital"), 1)
+        XCTAssertEqual(levenshteinDistance("flg", "flag"), 1)
+        XCTAssertEqual(levenshteinDistance("codee", "code"), 1)
     }
     
     func test_distance_countsMultipleEdits() {

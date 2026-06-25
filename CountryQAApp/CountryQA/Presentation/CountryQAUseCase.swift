@@ -55,15 +55,13 @@ public final class CountryQAUseCase {
         }
     }
     
-    // MARK: - Fuzzy country resolution（題目 "or even misspelled!"）
-    
+    // MARK: - Fuzzy country resolution
+
     private func resolveCountry(_ name: String) async throws -> CountryInfo? {
-        // 1) 直查國名（拼對就一次命中；錯誤吞掉，往 fuzzy 走）
         if let results = try? await loader.load(query: .searchByName(name)), let first = results.first {
             return first
         }
-        
-        // 2) Fallback：抓全清單，用 Levenshtein 找最近（閾值 ≤ 3）
+
         let all = try await loader.load(query: .all)
         let lowered = name.lowercased()
         let closest = all.min {
@@ -72,8 +70,7 @@ public final class CountryQAUseCase {
         guard let closest, levenshteinDistance(closest.name.lowercased(), lowered) <= 3 else {
             return nil
         }
-        
-        // 3) 用修正後名字重查，拿完整欄位（capital/cca2/flag…）
+
         let corrected = try await loader.load(query: .searchByName(closest.name))
         return corrected.first
     }

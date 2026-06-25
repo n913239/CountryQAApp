@@ -19,8 +19,8 @@ public final class CountryAnswerPresenter {
         view.display(makeViewModel(for: answer))
     }
     
-    // MARK: - Mapping（英文硬字串；Commit 16+ 抽成 Localizable.strings）
-    
+    // MARK: - Mapping
+
     private func makeViewModel(for answer: CountryAnswer) -> CountryAnswerViewModel {
         switch answer {
         case let .capital(country, capital):

@@ -62,7 +62,7 @@ final class SmartQuestionClassifierTests: XCTestCase {
         XCTAssertEqual(classify("brazil flag"), .flag(country: "brazil"))
     }
     
-    // MARK: 題目原文例句（acceptance）
+    // MARK: - Challenge spec examples
     
     func test_classify_matchesChallengeSpecExamples() {
         XCTAssertEqual(classify("What is the capital of Belgium?"), .capital(country: "belgium"))
@@ -71,7 +71,7 @@ final class SmartQuestionClassifierTests: XCTestCase {
         XCTAssertEqual(classify("What is the flag of Brazil?"), .flag(country: "brazil"))
     }
     
-    // MARK: 雜詞清理（noise）
+    // MARK: - Noise word stripping
     
     func test_classify_stripsTrailingNoiseWords() {
         XCTAssertEqual(classify("greece country code"), .isoCode(country: "greece"))

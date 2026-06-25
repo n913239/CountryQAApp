@@ -124,10 +124,10 @@ final class CountryQAUseCaseTests: XCTestCase {
         let loader = CountryInfoLoaderStub { query in
             callCount += 1
             switch callCount {
-            case 1: throw anyError()                                   // 直查 "Belgum" 失敗
-            case 2: return [makeCountryInfo(name: "Belgium"),          // .all → 全清單（只有名字）
+            case 1: throw anyError()
+            case 2: return [makeCountryInfo(name: "Belgium"),
                             makeCountryInfo(name: "Brazil")]
-            default: return [makeCountryInfo(name: "Belgium",          // 用修正後名字重查 → 完整欄位
+            default: return [makeCountryInfo(name: "Belgium",
                                              capital: "Brussels", cca2: "BE", flag: "🇧🇪")]
             }
         }
@@ -140,7 +140,7 @@ final class CountryQAUseCaseTests: XCTestCase {
     
 }
 
-// MARK: - Helpers（file-scope：closure 裡呼叫不需 `self.`）
+// MARK: - Helpers
 
 private func makeCountryInfo(
     name: String,
