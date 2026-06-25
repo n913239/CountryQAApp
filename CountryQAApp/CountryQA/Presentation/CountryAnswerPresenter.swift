@@ -20,41 +20,45 @@ public final class CountryAnswerPresenter {
     }
     
     // MARK: - Mapping
-
+    
     private func makeViewModel(for answer: CountryAnswer) -> CountryAnswerViewModel {
         switch answer {
         case let .capital(country, capital):
-            return CountryAnswerViewModel(message: "The capital of \(country) is \(capital).")
+            return CountryAnswerViewModel(message: String(format: Self.localized("CAPITAL_ANSWER_FORMAT"), country, capital))
             
         case let .countriesStartingWith(letters, countries):
             let message = countries.isEmpty
-            ? "No countries found starting with \(letters)."
-            : "Countries starting with \(letters): \(countries.joined(separator: ", "))."
+            ? String(format: Self.localized("STARTS_WITH_NONE_FORMAT"), letters)
+            : String(format: Self.localized("STARTS_WITH_ANSWER_FORMAT"), letters, countries.joined(separator: ", "))
             return CountryAnswerViewModel(message: message)
             
         case let .isoCode(country, code):
-            return CountryAnswerViewModel(message: "The ISO alpha-2 country code for \(country) is \(code).")
+            return CountryAnswerViewModel(message: String(format: Self.localized("ISO_CODE_ANSWER_FORMAT"), country, code))
             
         case let .flag(country, flagEmoji, flagImageURL):
             return CountryAnswerViewModel(
-                message: "The flag of \(country) is \(flagEmoji)",
+                message: String(format: Self.localized("FLAG_ANSWER_FORMAT"), country, flagEmoji),
                 flagEmoji: flagEmoji,
                 flagImageURL: flagImageURL
             )
             
         case .unknown:
-            return CountryAnswerViewModel(
-                message: "I don't understand that question. Try asking about a country's capital, ISO code, flag, or which countries start with certain letters."
-            )
+            return CountryAnswerViewModel(message: Self.localized("UNKNOWN_QUESTION_MESSAGE"))
             
         case let .countryNotFound(query):
-            return CountryAnswerViewModel(message: "Sorry, I couldn't find a country called \"\(query)\".")
+            return CountryAnswerViewModel(message: String(format: Self.localized("COUNTRY_NOT_FOUND_FORMAT"), query))
             
         case .loadingFailed:
-            return CountryAnswerViewModel(
-                message: "Something went wrong loading the answer. Please try again.",
-                showsRetry: true
-            )
+            return CountryAnswerViewModel(message: Self.localized("LOADING_FAILED_MESSAGE"), showsRetry: true)
         }
+    }
+    
+    private static func localized(_ key: String) -> String {
+        NSLocalizedString(
+            key,
+            tableName: "CountryQA",
+            bundle: Bundle(for: CountryAnswerPresenter.self),
+            comment: ""
+        )
     }
 }
