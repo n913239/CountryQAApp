@@ -57,8 +57,15 @@ final class ChatViewControllerSnapshotTests: XCTestCase {
         
         sut.simulateUserSends("What is the capital of Belgium?")
         sut.display(CountryAnswerViewModel(message: "The capital of Belgium is Brussels."))
-        
-        assert(snapshot: sut.snapshot(for: .iPhone(style: .light, contentSize: .accessibilityExtraExtraExtraLarge)), named: "CHAT_CONVERSATION_XXXL")
+
+        // Looser tolerance: the very large glyphs at this content size produce many
+        // antialiased edge pixels that differ slightly across GPU generations (dev vs CI).
+        assert(
+            snapshot: sut.snapshot(for: .iPhone(style: .light, contentSize: .accessibilityExtraExtraExtraLarge)),
+            named: "CHAT_CONVERSATION_XXXL",
+            precision: 0.94,
+            perChannelTolerance: 48
+        )
     }
     
     // MARK: - Helpers

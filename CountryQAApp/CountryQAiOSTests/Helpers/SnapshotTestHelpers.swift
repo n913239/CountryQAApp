@@ -12,9 +12,9 @@ import UIKit
 
 extension XCTestCase {
     
-    func assert(snapshot: UIImage, named name: String, file: StaticString = #filePath, line: UInt = #line) {
+    func assert(snapshot: UIImage, named name: String, precision: Double = 0.98, perChannelTolerance: UInt8 = 32, file: StaticString = #filePath, line: UInt = #line) {
         let snapshotURL = makeSnapshotURL(named: name, file: file)
-        
+
         guard
             let storedSnapshotData = try? Data(contentsOf: snapshotURL),
             let storedSnapshot = UIImage(data: storedSnapshotData)
@@ -22,12 +22,13 @@ extension XCTestCase {
             XCTFail("No reference snapshot found at \(snapshotURL). Use record(snapshot:named:) to store one first.", file: file, line: line)
             return
         }
-        
-        if !snapshot.matchesSnapshot(storedSnapshot, precision: 0.98, perChannelTolerance: 32) {
+
+        let matchRatio = snapshot.matchRatio(to: storedSnapshot, perChannelTolerance: perChannelTolerance)
+        if matchRatio < precision {
             let temporarySnapshotURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 .appendingPathComponent(snapshotURL.lastPathComponent)
             try? snapshot.pngData()?.write(to: temporarySnapshotURL)
-            XCTFail("New snapshot does not match stored snapshot. New: \(temporarySnapshotURL). Stored: \(snapshotURL).", file: file, line: line)
+            XCTFail("New snapshot does not match stored snapshot (match ratio \(matchRatio), required \(precision)). New: \(temporarySnapshotURL). Stored: \(snapshotURL).", file: file, line: line)
         }
     }
     
@@ -142,21 +143,20 @@ private final class SnapshotWindow: UIWindow {
 // MARK: - Tolerant image comparison
 
 private extension UIImage {
-    /// Compares two images allowing a small per-pixel difference.
-    /// - precision: the proportion of pixels that must match (0...1).
-    /// - perChannelTolerance: the maximum allowed difference per RGBA channel (0...255).
-    func matchesSnapshot(_ other: UIImage, precision: Double, perChannelTolerance: UInt8) -> Bool {
+    /// Returns the proportion of pixels (0...1) whose every RGBA channel differs
+    /// from `other` by no more than `perChannelTolerance`. Mismatched dimensions return 0.
+    func matchRatio(to other: UIImage, perChannelTolerance: UInt8) -> Double {
         guard
             let a = cgImage, let b = other.cgImage,
             a.width == b.width, a.height == b.height,
             let bytesA = a.rgbaBytes(), let bytesB = b.rgbaBytes(),
             bytesA.count == bytesB.count
-        else { return false }
-        
+        else { return 0 }
+
         let tolerance = Int(perChannelTolerance)
         let pixelCount = bytesA.count / 4
-        guard pixelCount > 0 else { return false }
-        
+        guard pixelCount > 0 else { return 0 }
+
         var matching = 0
         var i = 0
         while i < bytesA.count {
@@ -169,8 +169,8 @@ private extension UIImage {
             }
             i += 4
         }
-        
-        return Double(matching) / Double(pixelCount) >= precision
+
+        return Double(matching) / Double(pixelCount)
     }
 }
 
