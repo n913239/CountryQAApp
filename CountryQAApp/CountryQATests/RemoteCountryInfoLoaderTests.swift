@@ -2,7 +2,7 @@
 //  RemoteCountryInfoLoaderTests.swift
 //  CountryQATests
 //
-//  Created by mike on 2026/6/24.
+//  Created by mike on 2026/6/28.
 //
 
 import XCTest
@@ -16,13 +16,13 @@ final class RemoteCountryInfoLoaderTests: XCTestCase {
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
-    func test_load_requestsURLForQuery() async throws {
+    func test_load_requestsCountriesDatasetURL() async throws {
         let (sut, client) = makeSUT()
         client.stub(data: makeItemsJSON([]), response: makeHTTPURLResponse(statusCode: 200), error: nil)
         
-        _ = try await sut.load(query: .searchByName("Belgium"))
+        _ = try await sut.load(query: .all)
         
-        XCTAssertEqual(client.requestedURLs, [RestCountriesEndpoint.url(for: .searchByName("Belgium"))])
+        XCTAssertEqual(client.requestedURLs, [CountriesDatasetEndpoint.url])
     }
     
     func test_load_deliversConnectivityErrorOnClientError() async {
@@ -49,16 +49,22 @@ final class RemoteCountryInfoLoaderTests: XCTestCase {
         }
     }
     
-    func test_load_deliversCountryInfoOnSuccess() async throws {
+    func test_loadAll_deliversAllCountriesOnSuccess() async throws {
         let (sut, client) = makeSUT()
-        let json = makeItemsJSON([
-            ["name": ["common": "Belgium"], "capital": ["Brussels"], "cca2": "BE", "flag": "🇧🇪"]
-        ])
-        client.stub(data: json, response: makeHTTPURLResponse(statusCode: 200), error: nil)
+        client.stub(data: makeItemsJSON([belgiumJSON(), brazilJSON()]), response: makeHTTPURLResponse(statusCode: 200), error: nil)
         
-        let result = try await sut.load(query: .searchByName("Belgium"))
+        let result = try await sut.load(query: .all)
         
-        XCTAssertEqual(result, [CountryInfo(name: "Belgium", capital: "Brussels", cca2: "BE", flag: "🇧🇪", flagImageURL: nil)])
+        XCTAssertEqual(result, [belgium(), brazil()])
+    }
+    
+    func test_loadSearchByName_filtersCountriesByNameCaseInsensitively() async throws {
+        let (sut, client) = makeSUT()
+        client.stub(data: makeItemsJSON([belgiumJSON(), brazilJSON()]), response: makeHTTPURLResponse(statusCode: 200), error: nil)
+        
+        let result = try await sut.load(query: .searchByName("belgium"))
+        
+        XCTAssertEqual(result, [belgium()])
     }
     
     // MARK: - Helpers
@@ -69,6 +75,22 @@ final class RemoteCountryInfoLoaderTests: XCTestCase {
         trackForMemoryLeaks(client, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)
+    }
+    
+    private func belgium() -> CountryInfo {
+        CountryInfo(name: "Belgium", capital: "Brussels", cca2: "BE", flag: "🇧🇪", flagImageURL: URL(string: "https://flagcdn.com/w320/be.png"))
+    }
+    
+    private func brazil() -> CountryInfo {
+        CountryInfo(name: "Brazil", capital: "Brasília", cca2: "BR", flag: "🇧🇷", flagImageURL: URL(string: "https://flagcdn.com/w320/br.png"))
+    }
+    
+    private func belgiumJSON() -> [String: Any] {
+        ["name": ["common": "Belgium"], "capital": ["Brussels"], "cca2": "BE", "flag": "🇧🇪"]
+    }
+    
+    private func brazilJSON() -> [String: Any] {
+        ["name": ["common": "Brazil"], "capital": ["Brasília"], "cca2": "BR", "flag": "🇧🇷"]
     }
     
     private func makeItemsJSON(_ items: [[String: Any]]) -> Data {
@@ -83,8 +105,6 @@ final class RemoteCountryInfoLoaderTests: XCTestCase {
         NSError(domain: "any error", code: 0)
     }
 }
-
-// MARK: - Spy
 
 private class HTTPClientSpy: HTTPClient {
     private(set) var requestedURLs: [URL] = []
