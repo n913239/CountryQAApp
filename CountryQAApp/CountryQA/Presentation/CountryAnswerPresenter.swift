@@ -37,7 +37,7 @@ public final class CountryAnswerPresenter {
             
         case let .flag(country, flagEmoji, flagImageURL):
             return CountryAnswerViewModel(
-                message: String(format: Self.localized("FLAG_ANSWER_FORMAT"), country, flagEmoji),
+                message: String(format: Self.localized("FLAG_ANSWER_FORMAT"), country),
                 flagEmoji: flagEmoji,
                 flagImageURL: flagImageURL
             )

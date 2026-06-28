@@ -64,7 +64,7 @@ final class CountryAnswerPresenterTests: XCTestCase {
         sut.present(.flag(country: "Brazil", flagEmoji: "🇧🇷", flagImageURL: url))
         
         XCTAssertEqual(spy.messages, [
-            CountryAnswerViewModel(message: "The flag of Brazil is 🇧🇷", flagEmoji: "🇧🇷", flagImageURL: url)
+            CountryAnswerViewModel(message: "The flag of Brazil", flagEmoji: "🇧🇷", flagImageURL: url)
         ])
     }
     

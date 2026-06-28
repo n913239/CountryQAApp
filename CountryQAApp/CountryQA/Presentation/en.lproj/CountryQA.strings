@@ -2,7 +2,7 @@
 "STARTS_WITH_ANSWER_FORMAT" = "Countries starting with %@: %@.";
 "STARTS_WITH_NONE_FORMAT" = "No countries found starting with %@.";
 "ISO_CODE_ANSWER_FORMAT" = "The ISO alpha-2 country code for %@ is %@.";
-"FLAG_ANSWER_FORMAT" = "The flag of %@ is %@";
+"FLAG_ANSWER_FORMAT" = "The flag of %@";
 "UNKNOWN_QUESTION_MESSAGE" = "I don't understand that question. Try asking about a country's capital, ISO code, flag, or which countries start with certain letters.";
 "COUNTRY_NOT_FOUND_FORMAT" = "Sorry, I couldn't find a country called \"%@\".";
 "LOADING_FAILED_MESSAGE" = "Something went wrong loading the answer. Please try again.";
