@@ -46,17 +46,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2722B79D2FEB6B0C001581DC"
-               BuildableName = "CountryQAAppUITests.xctest"
-               BlueprintName = "CountryQAAppUITests"
-               ReferencedContainer = "container:CountryQAApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "2722B7D72FEB6CC8001581DC"
                BuildableName = "CountryQATests.xctest"
                BlueprintName = "CountryQATests"
