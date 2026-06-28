@@ -11,6 +11,8 @@
 		2722B7BE2FEB6B3D001581DC /* CountryQA.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2722B7B72FEB6B3D001581DC /* CountryQA.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2722B7CF2FEB6BAE001581DC /* CountryQA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2722B7B72FEB6B3D001581DC /* CountryQA.framework */; };
 		2722B7FC2FEB6EBC001581DC /* CI_iOS.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 2722B7FB2FEB6EBC001581DC /* CI_iOS.xctestplan */; };
+		2795CDF52FF17BE0002E0F9C /* CountryQA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2722B7B72FEB6B3D001581DC /* CountryQA.framework */; };
+		2795CDF62FF17BE0002E0F9C /* CountryQA.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2722B7B72FEB6B3D001581DC /* CountryQA.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,13 @@
 			remoteGlobalIDString = 2722B77D2FEB6B0B001581DC;
 			remoteInfo = CountryQAApp;
 		};
+		2795CDF72FF17BE0002E0F9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2722B7762FEB6B0B001581DC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2722B7B62FEB6B3D001581DC;
+			remoteInfo = CountryQA;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -78,6 +87,17 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
+		};
+		2795CDF92FF17BE0002E0F9C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2795CDF62FF17BE0002E0F9C /* CountryQA.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -192,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2795CDF52FF17BE0002E0F9C /* CountryQA.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,11 +415,13 @@
 				2722B7EE2FEB6CE1001581DC /* Sources */,
 				2722B7EF2FEB6CE1001581DC /* Frameworks */,
 				2722B7F02FEB6CE1001581DC /* Resources */,
+				2795CDF92FF17BE0002E0F9C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				2722B7F72FEB6CE1001581DC /* PBXTargetDependency */,
+				2795CDF82FF17BE0002E0F9C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				2722B7F32FEB6CE1001581DC /* CountryQAAPIEndToEndTests */,
@@ -601,6 +624,11 @@
 			isa = PBXTargetDependency;
 			target = 2722B77D2FEB6B0B001581DC /* CountryQAApp */;
 			targetProxy = 2722B7F62FEB6CE1001581DC /* PBXContainerItemProxy */;
+		};
+		2795CDF82FF17BE0002E0F9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2722B7B62FEB6B3D001581DC /* CountryQA */;
+			targetProxy = 2795CDF72FF17BE0002E0F9C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
