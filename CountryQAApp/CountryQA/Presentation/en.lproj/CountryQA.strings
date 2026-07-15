@@ -1,0 +1,13 @@
+"CAPITAL_ANSWER_FORMAT" = "The capital of %@ is %@.";
+"STARTS_WITH_ANSWER_FORMAT" = "Countries starting with %@: %@.";
+"STARTS_WITH_NONE_FORMAT" = "No countries found starting with %@.";
+"ISO_CODE_ANSWER_FORMAT" = "The ISO alpha-2 country code for %@ is %@.";
+"FLAG_ANSWER_FORMAT" = "The flag of %@";
+"UNKNOWN_QUESTION_MESSAGE" = "I don't understand that question. Try asking about a country's capital, ISO code, flag, or which countries start with certain letters.";
+"COUNTRY_NOT_FOUND_FORMAT" = "Sorry, I couldn't find a country called \"%@\".";
+"LOADING_FAILED_MESSAGE" = "Something went wrong loading the answer. Please try again.";
+"RETRY_HINT" = "Type 'retry' to try again.";
+"CONSOLE_GREETING" = "Country Q&A - Ask me about any country!";
+"CONSOLE_EXAMPLES" = "Examples: 'What is the capital of Belgium?', 'What is the flag of Brazil?'";
+"CONSOLE_COMMANDS" = "Type 'retry' to repeat the last question, or 'quit' to exit.";
+"CONSOLE_NOTHING_TO_RETRY" = "There is no previous question to retry. Ask me something first.";
