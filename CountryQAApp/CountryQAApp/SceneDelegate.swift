@@ -1,4 +1,4 @@
-//
+ //
 //  SceneDelegate.swift
 //  CountryQAApp
 //
@@ -6,17 +6,34 @@
 //
 
 import UIKit
+import CountryQA
 
 @MainActor
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
     var window: UIWindow?
-    
+
+    private var httpClient: HTTPClient = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
+
+    override init() {
+        super.init()
+    }
+
+    convenience init(httpClient: HTTPClient) {
+        self.init()
+        self.httpClient = httpClient
+    }
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UIViewController()
+        configureWindow()
+    }
+
+    func configureWindow() {
+        window?.rootViewController = UINavigationController(
+            rootViewController: CountryQAUIComposer.compose(httpClient: httpClient)
+        )
         window?.makeKeyAndVisible()
     }
-    
 }
