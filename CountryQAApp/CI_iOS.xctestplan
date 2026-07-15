@@ -1,0 +1,53 @@
+{
+  "configurations" : [
+    {
+      "id" : "DC31F045-E9BB-4A6A-9BAA-690B7B74B594",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:CountryQAApp.xcodeproj",
+          "identifier" : "273C16C03006883800997F8E",
+          "name" : "CountryQA"
+        },
+        {
+          "containerPath" : "container:CountryQAApp.xcodeproj",
+          "identifier" : "273C16693006867B00997F8E",
+          "name" : "CountryQAApp"
+        }
+      ]
+    },
+    "testExecutionOrdering" : "random",
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:CountryQAApp.xcodeproj",
+        "identifier" : "273C16EB30070DA800997F8E",
+        "name" : "CountryQAiOSTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:CountryQAApp.xcodeproj",
+        "identifier" : "273C167F3006867B00997F8E",
+        "name" : "CountryQAAppTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:CountryQAApp.xcodeproj",
+        "identifier" : "273C16C83006883800997F8E",
+        "name" : "CountryQATests"
+      }
+    }
+  ],
+  "version" : 1
+}
