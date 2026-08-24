@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class URLSessionHTTPClient: HTTPClient {
+public final class URLSessionHTTPClient: HTTPClient, HTTPPostClient {
     public struct UnexpectedValuesRepresentation: Error {}
 
     private let session: URLSession
@@ -17,12 +17,23 @@ public final class URLSessionHTTPClient: HTTPClient {
     }
 
     public func get(from url: URL) async throws -> (Data, HTTPURLResponse) {
-        let (data, response) = try await session.data(from: url)
+        try httpResponse(for: try await session.data(from: url))
+    }
 
-        guard let httpResponse = response as? HTTPURLResponse else {
+    public func post(to url: URL, body: Data, headers: [String: String]) async throws -> (Data, HTTPURLResponse) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = body
+        for (field, value) in headers {
+            request.setValue(value, forHTTPHeaderField: field)
+        }
+        return try httpResponse(for: try await session.data(for: request))
+    }
+
+    private func httpResponse(for result: (Data, URLResponse)) throws -> (Data, HTTPURLResponse) {
+        guard let httpResponse = result.1 as? HTTPURLResponse else {
             throw UnexpectedValuesRepresentation()
         }
-
-        return (data, httpResponse)
+        return (result.0, httpResponse)
     }
 }

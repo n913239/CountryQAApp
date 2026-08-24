@@ -54,6 +54,37 @@ final class URLSessionHTTPClientTests: XCTestCase {
         }
     }
 
+    func test_postToURL_sendsAPOSTRequestWithTheGivenHeaders() async throws {
+        URLProtocolStub.stub(data: Data(), response: makeHTTPURLResponse(statusCode: 200), error: nil)
+
+        _ = try await makeSUT().post(to: anyURL(), body: Data("a body".utf8), headers: ["Content-Type": "application/json"])
+
+        let request = try XCTUnwrap(URLProtocolStub.observedRequests.last)
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
+    }
+
+    func test_postToURL_succeedsOnHTTPURLResponseWithData() async throws {
+        let expectedData = Data("reply".utf8)
+        URLProtocolStub.stub(data: expectedData, response: makeHTTPURLResponse(statusCode: 200), error: nil)
+
+        let (data, response) = try await makeSUT().post(to: anyURL(), body: Data(), headers: [:])
+
+        XCTAssertEqual(data, expectedData)
+        XCTAssertEqual(response.statusCode, 200)
+    }
+
+    func test_postToURL_failsOnRequestError() async {
+        URLProtocolStub.stub(data: nil, response: nil, error: anyError())
+
+        do {
+            _ = try await makeSUT().post(to: anyURL(), body: Data(), headers: [:])
+            XCTFail("Expected error but got success")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHTTPClient {
@@ -82,6 +113,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
 
 private class URLProtocolStub: URLProtocol {
     private static var stub: Stub?
+    private(set) static var observedRequests: [URLRequest] = []
 
     private struct Stub {
         let data: Data?
@@ -100,6 +132,7 @@ private class URLProtocolStub: URLProtocol {
     static func stopIntercepting() {
         URLProtocol.unregisterClass(URLProtocolStub.self)
         stub = nil
+        observedRequests = []
     }
 
     override class func canInit(with request: URLRequest) -> Bool { true }
@@ -107,6 +140,7 @@ private class URLProtocolStub: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
+        URLProtocolStub.observedRequests.append(request)
         if let error = URLProtocolStub.stub?.error {
             client?.urlProtocol(self, didFailWithError: error)
         } else {
