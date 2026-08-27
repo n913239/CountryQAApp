@@ -109,7 +109,7 @@ final class ChatViewControllerSnapshotTests: XCTestCase {
 
 @MainActor
 private extension ChatViewController {
-    /// The flag arrives on a detached Task and reloads its row, so the snapshot has to wait for it.
+    /// The flag arrives on an asynchronous task and reloads its row, so the snapshot has to wait for it.
     func waitForFlagImage(timeout: TimeInterval = 2.0) async {
         let deadline = Date().addingTimeInterval(timeout)
 
