@@ -38,8 +38,8 @@ public final class CountryQAUseCase {
             let prefix = letters.uppercased()
             let matching = countries
                 .map(\.name)
-                .filter { $0.uppercased().hasPrefix(prefix) }
-                .sorted()
+                .filter { Self.comparable($0).hasPrefix(Self.comparable(prefix)) }
+                .sorted { Self.comparable($0) < Self.comparable($1) }
             return .countriesStartingWith(letters: prefix, countries: matching)
 
         case let .isoCode(query):
@@ -57,5 +57,12 @@ public final class CountryQAUseCase {
         case .unknown:
             return .unknown
         }
+    }
+
+    /// The dataset spells some names with diacritics ("Åland Islands"), which no one types when
+    /// asking which countries start with a letter. Folding both sides keeps such a name in the
+    /// answer and sorts it among the plain letters instead of after "Z".
+    private static func comparable(_ text: String) -> String {
+        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
     }
 }

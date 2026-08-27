@@ -32,6 +32,17 @@ final class CountryQAUseCaseTests: XCTestCase {
         XCTAssertEqual(answer, .countriesStartingWith(letters: "CH", countries: ["Chad", "Chile", "China"]))
     }
 
+    func test_answer_countriesStartingWithIntent_includesNamesStartingWithAnAccentedLetter() async throws {
+        let sut = makeSUT(
+            intent: .countriesStartingWith("a"),
+            countries: [named("Åland Islands"), named("Austria"), named("Brazil")]
+        )
+
+        let answer = try await sut.answer("Which countries start with A?")
+
+        XCTAssertEqual(answer, .countriesStartingWith(letters: "A", countries: ["Åland Islands", "Austria"]))
+    }
+
     func test_answer_isoCodeIntent_deliversCode() async throws {
         let sut = makeSUT(intent: .isoCode("Greece"), countries: [makeCountryInfo(name: "Greece", cca2: "GR")])
 
