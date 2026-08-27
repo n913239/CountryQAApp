@@ -9,6 +9,7 @@ import Foundation
 
 public enum CountryAnswer: Equatable {
     case capital(country: String, capital: String)
+    case noKnownCapital(country: String)
     case countriesStartingWith(letters: String, countries: [String])
     case isoCode(country: String, code: String)
     case flag(country: String, flagEmoji: String, flagImageURL: URL?)

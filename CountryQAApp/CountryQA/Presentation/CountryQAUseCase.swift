@@ -29,8 +29,11 @@ public final class CountryQAUseCase {
 
         switch intent {
         case let .capitalOf(query):
-            guard let country = CountryMatcher.match(query, in: countries), let capital = country.capital else {
+            guard let country = CountryMatcher.match(query, in: countries) else {
                 return .countryNotFound(query: query)
+            }
+            guard let capital = country.capital else {
+                return .noKnownCapital(country: country.name)
             }
             return .capital(country: country.name, capital: capital)
 

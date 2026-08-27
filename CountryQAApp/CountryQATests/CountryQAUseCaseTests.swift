@@ -21,6 +21,17 @@ final class CountryQAUseCaseTests: XCTestCase {
         XCTAssertEqual(answer, .capital(country: "Belgium", capital: "Brussels"))
     }
 
+    func test_answer_capitalIntent_whenTheCountryHasNoCapital_doesNotClaimTheCountryIsUnknown() async throws {
+        let sut = makeSUT(
+            intent: .capitalOf("Antarctica"),
+            countries: [makeCountryInfo(name: "Antarctica", cca2: "AQ")]
+        )
+
+        let answer = try await sut.answer("What is the capital of Antarctica?")
+
+        XCTAssertEqual(answer, .noKnownCapital(country: "Antarctica"))
+    }
+
     func test_answer_countriesStartingWithIntent_filtersByPrefixCaseInsensitively() async throws {
         let sut = makeSUT(
             intent: .countriesStartingWith("ch"),

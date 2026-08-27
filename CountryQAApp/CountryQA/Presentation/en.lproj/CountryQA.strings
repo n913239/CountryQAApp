@@ -1,4 +1,5 @@
 "CAPITAL_ANSWER_FORMAT" = "The capital of %@ is %@.";
+"NO_KNOWN_CAPITAL_FORMAT" = "The dataset lists no capital city for %@.";
 "STARTS_WITH_ANSWER_FORMAT" = "Countries starting with %@: %@.";
 "STARTS_WITH_NONE_FORMAT" = "No countries found starting with %@.";
 "ISO_CODE_ANSWER_FORMAT" = "The ISO alpha-2 country code for %@ is %@.";

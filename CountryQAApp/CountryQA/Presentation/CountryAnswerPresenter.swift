@@ -35,6 +35,9 @@ public final class CountryAnswerPresenter {
         case let .capital(country, capital):
             return CountryAnswerViewModel(message: String(format: Self.localized("CAPITAL_ANSWER_FORMAT"), country, capital))
 
+        case let .noKnownCapital(country):
+            return CountryAnswerViewModel(message: String(format: Self.localized("NO_KNOWN_CAPITAL_FORMAT"), country))
+
         case let .countriesStartingWith(letters, countries):
             let message = countries.isEmpty
             ? String(format: Self.localized("STARTS_WITH_NONE_FORMAT"), letters)

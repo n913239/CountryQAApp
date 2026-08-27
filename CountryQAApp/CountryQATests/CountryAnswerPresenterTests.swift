@@ -78,6 +78,17 @@ final class CountryAnswerPresenterTests: XCTestCase {
         ])
     }
 
+    func test_present_noKnownCapital_namesTheCountryItFound() {
+        let (sut, spy) = makeSUT()
+
+        sut.present(.noKnownCapital(country: "Antarctica"))
+
+        XCTAssertEqual(spy.messages, [
+            CountryAnswerViewModel(message: "The dataset lists no capital city for Antarctica.")
+        ])
+        XCTAssertEqual(spy.messages.first?.showsRetry, false)
+    }
+
     func test_present_countryNotFound_displaysNotFoundMessageWithoutRetry() {
         let (sut, spy) = makeSUT()
 
