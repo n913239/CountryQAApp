@@ -37,6 +37,29 @@ final class CountryQAAcceptanceTests: XCTestCase {
         XCTAssertTrue(chat.bubbleTexts.contains("The capital of Belgium is Brussels."), "Expected the answer bubble after retry, got \(chat.bubbleTexts)")
     }
 
+    func test_retry_reAsksTheQuestionThatFailed_notTheMostRecentOne() async throws {
+        let stub = HTTPClientStub(result: .failure(anyError()))
+        let chat = try launch(httpClient: stub, interpreter: RoutingInterpreter(intents: [
+            capitalQuestion: .capitalOf("Belgium"),
+            isoCodeQuestion: .isoCode("Greece")
+        ]))
+
+        chat.simulateUserSends(capitalQuestion)
+        await waitForUI()
+
+        stub.result = .success(belgiumAndGreeceResponse())
+        chat.simulateUserSends(isoCodeQuestion)
+        await waitForUI()
+
+        chat.simulateRetry()
+        await waitForUI()
+
+        XCTAssertTrue(
+            chat.bubbleTexts.contains("The capital of Belgium is Brussels."),
+            "Expected retry to re-ask the question that failed, got \(chat.bubbleTexts)"
+        )
+    }
+
     // MARK: - Helpers
 
     private var heldSceneDelegate: SceneDelegate?
@@ -76,15 +99,35 @@ final class CountryQAAcceptanceTests: XCTestCase {
         NSError(domain: "offline", code: 0)
     }
 
+    private let capitalQuestion = "What is the capital of Belgium?"
+    private let isoCodeQuestion = "What is the ISO alpha-2 country code for Greece?"
+
     private func belgiumResponse() -> (Data, HTTPURLResponse) {
-        let json: [[String: Any]] = [[
-            "name": ["common": "Belgium"],
-            "capital": ["Brussels"],
-            "cca2": "BE",
-            "flag": "🇧🇪",
-            "flags": ["png": "https://flagcdn.com/w320/be.png"]
-        ]]
-        let data = try! JSONSerialization.data(withJSONObject: json)
+        response(with: [belgium])
+    }
+
+    private func belgiumAndGreeceResponse() -> (Data, HTTPURLResponse) {
+        response(with: [belgium, greece])
+    }
+
+    private let belgium: [String: Any] = [
+        "name": ["common": "Belgium"],
+        "capital": ["Brussels"],
+        "cca2": "BE",
+        "flag": "🇧🇪",
+        "flags": ["png": "https://flagcdn.com/w320/be.png"]
+    ]
+
+    private let greece: [String: Any] = [
+        "name": ["common": "Greece"],
+        "capital": ["Athens"],
+        "cca2": "GR",
+        "flag": "🇬🇷",
+        "flags": ["png": "https://flagcdn.com/w320/gr.png"]
+    ]
+
+    private func response(with countries: [[String: Any]]) -> (Data, HTTPURLResponse) {
+        let data = try! JSONSerialization.data(withJSONObject: countries)
         let response = HTTPURLResponse(url: URL(string: "https://restcountries.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         return (data, response)
     }
@@ -99,6 +142,14 @@ private final class HTTPClientStub: HTTPClient, @unchecked Sendable {
 
     func get(from url: URL) async throws -> (Data, HTTPURLResponse) {
         try result.get()
+    }
+}
+
+private struct RoutingInterpreter: QuestionInterpreter {
+    let intents: [String: QuestionIntent]
+
+    func interpret(_ text: String) async throws -> QuestionIntent {
+        intents[text] ?? .unknown
     }
 }
 
