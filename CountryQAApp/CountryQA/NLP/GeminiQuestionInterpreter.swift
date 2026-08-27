@@ -25,7 +25,7 @@ public final class GeminiQuestionInterpreter: QuestionInterpreter {
     public init(
         client: HTTPPostClient,
         apiKey: String,
-        model: String = "gemini-flash-latest",
+        model: String = "gemini-flash-lite-latest",
         baseURL: URL = URL(string: "https://generativelanguage.googleapis.com/v1beta")!
     ) {
         self.client = client

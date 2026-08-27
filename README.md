@@ -122,9 +122,11 @@ Interpretation calls the Gemini API, which needs a free API key from
 - **iOS** — set `GEMINI_API_KEY` in the run scheme's *Environment Variables*.
 - **CLI** — `export GEMINI_API_KEY=...` before running.
 
-The default model is the `gemini-flash-latest` alias, so it always points at the current Flash model
-and keeps working as older named models are retired. Without a key the apps run but every
-interpretation fails gracefully into the retry path rather than crashing.
+The default model is the `gemini-flash-lite-latest` alias, so it always points at the current Flash
+Lite model and keeps working as older named models are retired. Lite is enough here — the model only
+classifies the question, it never produces an answer — and it stays within the free tier's rate
+limit, which the larger Flash models exhaust after a handful of questions. Without a key the apps
+still run, but every interpretation fails gracefully into the retry path rather than crashing.
 
 ## Data source
 
